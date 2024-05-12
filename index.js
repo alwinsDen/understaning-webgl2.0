@@ -1,21 +1,10 @@
 "use strict";
 
-var vertexShaderSource = `#version 300 es
-
-in vec4 a_position;
-void main() {
-  gl_Position = a_position;
+//this function loads the data from glsl file as text
+const loadGLSL = async(url) => {
+    const response = await fetch(url);
+    return await response.text();
 }
-`;
-
-var fragmentShaderSource = `#version 300 es
-
-precision highp float;
-out vec4 outColor;
-void main() {
-  outColor = vec4(1, 0, 0.5, 1);
-}
-`;
 
 function createShader(gl, type, source) {
     var shader = gl.createShader(type);
@@ -44,12 +33,15 @@ function createProgram(gl, vertexShader, fragmentShader) {
     return undefined;
 }
 
-function main() {
+async function main() {
     var canvas = document.querySelector("#c");
     var gl = canvas.getContext("webgl2");
     if (!gl) {
         return;
     }
+    //load the shaders
+    var vertexShaderSource = await loadGLSL("VertexShader.glsl");
+    var fragmentShaderSource = await loadGLSL("FragmentShader.glsl");
     var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     var program = createProgram(gl, vertexShader, fragmentShader);
