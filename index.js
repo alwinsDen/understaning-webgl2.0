@@ -1,11 +1,24 @@
 "use strict";
 
 //this function loads the data from glsl file as text
+/**
+ * Loads a GLSL file from the specified URL.
+ * @param {string} url - The URL of the GLSL file to load.
+ * @returns {Promise<string>} - A promise that resolves with the loaded GLSL code as a string.
+ */
 const loadGLSL = async(url) => {
     const response = await fetch(url);
     return await response.text();
 }
 
+/**
+ * Creates and compiles a shader program.
+ *
+ * @param {WebGLRenderingContext} gl - The WebGL rendering context.
+ * @param {number} type - The type of the shader to create. Can be either gl.VERTEX_SHADER or gl.FRAGMENT_SHADER.
+ * @param {string} source - The source code of the shader.
+ * @returns {WebGLShader|undefined} The compiled shader program.
+ */
 function createShader(gl, type, source) {
     var shader = gl.createShader(type);
     gl.shaderSource(shader, source);
@@ -19,6 +32,14 @@ function createShader(gl, type, source) {
     return undefined;
 }
 
+/**
+ * Creates a WebGL program from given vertex and fragment shaders.
+ *
+ * @param {WebGLRenderingContext} gl - The WebGL rendering context.
+ * @param {WebGLShader} vertexShader - The vertex shader.
+ * @param {WebGLShader} fragmentShader - The fragment shader.
+ * @return {WebGLProgram|undefined} - The created program, or undefined if program creation or linking fails.
+ */
 function createProgram(gl, vertexShader, fragmentShader) {
     var program = gl.createProgram();
     gl.attachShader(program, vertexShader);
@@ -33,6 +54,11 @@ function createProgram(gl, vertexShader, fragmentShader) {
     return undefined;
 }
 
+/**
+ * Runs the main WebGL program.
+ * @async
+ * @return {Promise<void>} Resolves once the program has finished executing.
+ */
 async function main() {
     var canvas = document.querySelector("#c");
     var gl = canvas.getContext("webgl2");
